@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"PCA on mtcars dataset\"\nauthor: \"Jonathan Fan\"\ndate: \"Feb 5th, 2017\"\noutput:\n  html_document:\n    fig_height: 7\n    fig_width: 9\n    keep_md: yes\n    toc: yes\n    toc_float: yes\n---\n\n```{r setup, include=FALSE}\nlibrary(knitr)\nknitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)\n\n```\n\nIn the following document, we perform principal component analysis of the `datasets::mtcars` data\n\n# Introducing the `mtcars` dataset\n\nHere is the actual dataset\n\n```{r, results='asis'}\nknitr::kable(mtcars)\n```\n\nAnd here are the summary statistics for each variable\n\n```{r}\nsummary(mtcars)\n```\n\n\n\n# Principal Component Analysis on the `mtcars` dataset\n\n```{r}\n# cor = TRUE indicates that PCA is performed on \n# standardized data (mean = 0, variance= 1)\npcaCars <- princomp(mtcars, cor = TRUE)\n\n# view objects stored in pcaCars\nnames(pcaCars)\n\n# proportion of variance explained\nsummary(pcaCars)\n```\n\n## Visulation of the PCs\n\n```{r}\n# bar plot\nplot(pcaCars)\n\n# scree plot\nplot(pcaCars, type = \"l\")\n\n```\n\n\n# Cluster Analysis Using PCA Scores\n\nFirst we cluster the cars using hierarchical clustering\n\n```{r}\n# cluster cars\ncarsHC <- hclust(dist(pcaCars$scores), method = \"ward.D2\")\n\n# dendrogram\nplot(carsHC)\n\n```\n\n\n## Cutting the Dendrogram\n\n```{r}\n# cut the dendrogram into 3 clusters\ncarsClusters <- cutree(carsHC, k = 3)\n\n# draw dendogram with red borders around the 3 clusters \nplot(carsHC)\nrect.hclust(carsHC, k=3, border=\"red\")\n```\n\n\n## First 2 PCs with Cluster Membership\n\n```{r}\n# add cluster to data frame of scores\ncarsDf <- data.frame(pcaCars$scores, \"cluster\" = factor(carsClusters))\nstr(carsDf)\n\n# plot the first 2 PCs with cluster membership\n# need to install ggplot2 and ggrepel packages first\n# using the following command in R: \n# install.packages(c(\"ggplot2\",\"ggrepel\"))\nlibrary(ggplot2)\nlibrary(ggrepel)\nggplot(carsDf,aes(x=Comp.1, y=Comp.2)) +\n  geom_text_repel(aes(label = rownames(carsDf))) +\n  theme_classic() +\n  geom_hline(yintercept = 0, color = \"gray70\") +\n  geom_vline(xintercept = 0, color = \"gray70\") +\n  geom_point(aes(color = cluster), alpha = 0.55, size = 3) +\n  xlab(\"PC1\") +\n  ylab(\"PC2\") + \n  xlim(-5, 6) + \n  ggtitle(\"PCA plot of Cars\")\n```\n\n",
+    "created" : 1486340664317.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3505312448",
+    "id" : "80A4DAD6",
+    "lastKnownWriteTime" : 1486342443,
+    "last_content_update" : 1486342443303,
+    "path" : "~/GitHub/pcaCars/pca_HTML.Rmd",
+    "project_path" : "pca_HTML.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
